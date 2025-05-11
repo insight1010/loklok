@@ -3,10 +3,13 @@
 # Скрипт для настройки Nginx как обратного прокси для ЛИП
 
 # Настройки
-SERVER_HOST="username@your-server-ip"
+SERVER_HOST="root@2a03:6f00:a::9409"
 SSH_KEY="~/.ssh/id_rsa"
-DOMAIN="your-domain.com" # Замените на ваш домен
+DOMAIN="lip-workshop.ru" # Замените на свой домен
 APP_PORT=3000
+
+# Пароль для root
+ROOT_PASSWORD="yfu4MemdN+o-6M"
 
 # Цвета для вывода
 GREEN='\033[0;32m'

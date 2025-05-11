@@ -3,12 +3,15 @@
 # Скрипт для мониторинга приложения ЛИП
 
 # Настройки
-SERVER_HOST="username@your-server-ip"
+SERVER_HOST="root@2a03:6f00:a::9409"
 SSH_KEY="~/.ssh/id_rsa"
-DEPLOY_PATH="/home/username/lip-workshop"
+DEPLOY_PATH="/root/lip-workshop"
 LOG_DIR="$DEPLOY_PATH/logs"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
 HEALTH_CHECK_URL="http://localhost:3000/health"
+
+# Пароль для root
+ROOT_PASSWORD="yfu4MemdN+o-6M"
 
 # Цвета для вывода
 GREEN='\033[0;32m'

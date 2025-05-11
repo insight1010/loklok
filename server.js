@@ -592,7 +592,7 @@ app.put('/notifications/:notificationId/read', authMiddleware, async (req, res) 
 // Серверная часть для обработки авторизации через Telegram
 const config = {
     // Замените на ваш bot_token, полученный от @BotFather
-    botToken: process.env.TELEGRAM_BOT_TOKEN || 'YOUR_BOT_TOKEN',
+    botToken: process.env.TELEGRAM_BOT_TOKEN || 'ваш_реальный_токен_бота',
 };
 
 // Функция для проверки данных от Telegram
