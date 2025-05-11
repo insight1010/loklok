@@ -19,7 +19,7 @@ const lipApp = {
     // Текущий пользователь
     currentUser: null,
 
-    // Инициализация приложения
+// Инициализация приложения
     async init() {
         console.log('Инициализация приложения ЛИП');
         
@@ -29,11 +29,11 @@ const lipApp = {
             try {
                 this.currentUser = JSON.parse(savedUser);
                 this.updateUserInterface();
-            } catch (error) {
+        } catch (error) {
                 console.error('Ошибка при загрузке данных пользователя:', error);
                 localStorage.removeItem('lip_user');
-            }
-        } else {
+        }
+    } else {
             // Если пользователь не авторизован, показываем модальное окно авторизации
             this.showLoginModal();
         }
@@ -133,9 +133,9 @@ const lipApp = {
                             </script>
                         </div>
                     </div>
-                </div>
-            `;
-            
+                        </div>
+                    `;
+                    
             document.body.insertAdjacentHTML('beforeend', modalHtml);
         }
         

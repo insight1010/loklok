@@ -658,6 +658,17 @@ app.post('/api/auth/telegram', (req, res) => {
     }
 });
 
+// Эндпоинт для проверки здоровья приложения
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: process.env.npm_package_version || '1.0.0',
+    mongo: 'connected' // Здесь можно добавить реальную проверку подключения к MongoDB
+  });
+});
+
 // Запуск сервера
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

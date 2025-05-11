@@ -320,4 +320,129 @@ Authorization: Bearer YOUR_TOKEN
 
 ## Лицензия
 
-MIT 
+MIT
+
+## Деплой на сервере
+
+### Подготовка сервера
+
+1. Подключитесь к серверу по SSH:
+   ```bash
+   ssh username@your-server-ip
+   ```
+
+2. Установите Docker и Docker Compose:
+   ```bash
+   # Обновите пакеты
+   sudo apt update
+   sudo apt upgrade -y
+
+   # Установите необходимые пакеты
+   sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+
+   # Добавьте Docker GPG ключ
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+   # Добавьте Docker репозиторий
+   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+   # Установите Docker
+   sudo apt update
+   sudo apt install -y docker-ce
+
+   # Установите Docker Compose
+   sudo curl -L "https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+   sudo chmod +x /usr/local/bin/docker-compose
+
+   # Добавьте вашего пользователя в группу docker, чтобы не использовать sudo
+   sudo usermod -aG docker $USER
+   # Перезайдите в систему, чтобы изменения вступили в силу
+   ```
+
+### Деплой приложения
+
+1. Клонируйте репозиторий на сервер:
+   ```bash
+   git clone https://github.com/yourusername/lip-workshop.git
+   cd lip-workshop
+   ```
+
+2. Создайте файл .env с настройками окружения:
+   ```bash
+   echo "TELEGRAM_BOT_TOKEN=your_bot_token" > .env
+   echo "JWT_SECRET=your_secure_jwt_secret" >> .env
+   ```
+
+3. Запустите приложение:
+   ```bash
+   docker-compose up -d
+   ```
+
+4. Проверьте, что контейнеры запущены:
+   ```bash
+   docker ps
+   ```
+
+5. Настройте Nginx как обратный прокси (по необходимости):
+   ```bash
+   sudo apt install -y nginx
+   
+   # Конфигурация для Nginx
+   sudo nano /etc/nginx/sites-available/lip-workshop
+   ```
+
+   Содержимое файла:
+   ```nginx
+   server {
+       listen 80;
+       server_name your-domain.com;
+
+       location / {
+           proxy_pass http://localhost:3000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_cache_bypass $http_upgrade;
+       }
+   }
+   ```
+
+   Активируйте конфигурацию:
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/lip-workshop /etc/nginx/sites-enabled/
+   sudo nginx -t
+   sudo systemctl restart nginx
+   ```
+
+6. Настройте SSL с помощью Certbot:
+   ```bash
+   sudo apt install -y certbot python3-certbot-nginx
+   sudo certbot --nginx -d your-domain.com
+   ```
+
+### Обслуживание
+
+1. Просмотр логов:
+   ```bash
+   docker logs lip-app
+   docker logs lip-mongo
+   ```
+
+2. Обновление приложения:
+   ```bash
+   git pull
+   docker-compose down
+   docker-compose up -d --build
+   ```
+
+3. Создание резервной копии базы данных:
+   ```bash
+   docker exec lip-mongo mongodump --out /data/backup
+   docker cp lip-mongo:/data/backup ./backup
+   ```
+
+4. Мониторинг приложения:
+   ```bash
+   docker stats
+   ``` 
