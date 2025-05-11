@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЛИП: Локер-Инсайт-Потенциал</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4FACFE;
+            --accent: #FF5E62;
+            --light: #F8F9FA;
+            --dark: #212529;
+            --success: #2ECC71;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --grey: #6C757D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .main {
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        .stages {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stage-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stage-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .stage-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .stage-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .stage-btn:hover::after {
+            width: 100%;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .session-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .timer {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .participants {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .participant {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .participant-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--grey);
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .stages-content {
+            display: none;
+        }
+
+        .stages-content.active {
+            display: block;
+        }
+
+        .insight-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #FFFFFF, #F0F2F5);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .insight-author {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .rules-box {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(79, 172, 254, 0.1));
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .rules-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .rules-list {
+            padding-left: 1.5rem;
+        }
+
+        .rules-list li {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .rules-list li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: -1rem;
+        }
+
+        .tab-navigation {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background-color: transparent;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            display: none;
+            min-width: 150px;
+            z-index: 100;
+        }
+        
+        .user-dropdown.active {
+            display: block;
+        }
+        
+        .user-dropdown-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .user-dropdown-item:hover {
+            background-color: var(--light);
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .stages {
+                flex-direction: column;
+            }
+
+            .insight-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">ЛИП<span>.</span></div>
+                <div class="user-menu">
+                    <div class="user-menu-btn">
+                        <span id="user-name">Гость</span>
+                        <div class="participant-avatar" id="user-avatar">Г</div>
+                    </div>
+                    <div class="user-dropdown">
+                        <div class="user-dropdown-item" id="profile-btn">Профиль</div>
+                        <div class="user-dropdown-item" id="create-session-btn">Создать сессию</div>
+                        <div class="user-dropdown-item" id="join-session-btn">Присоединиться</div>
+                        <div class="user-dropdown-item" id="logout-btn">Выйти</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="session-info">
+                <div class="timer">14:59</div>
+                <div class="participants">
+                    <!-- Участники будут загружены динамически -->
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%;"></div>
+            </div>
+
+            <div class="stages">
+                <button class="stage-btn active" data-stage="locker">ЛОКЕР</button>
+                <button class="stage-btn" data-stage="insight">ИНСАЙТ</button>
+                <button class="stage-btn" data-stage="potential">ПОТЕНЦИАЛ</button>
+            </div>
+
+            <div id="locker-stage" class="stages-content active">
+                <div class="rules-box animate-in">
+                    <div class="rules-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 16V12" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 8H12.01" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Правила этапа "ЛОКЕР"
+                    </div>
+                    <ul class="rules-list">
+                        <li>Опишите проблему максимально конкретно, используя факты, а не эмоции</li>
+                        <li>Выделите основное противоречие, с которым вы сталкиваетесь</li>
+                        <li>Избегайте "бухтения" и жалоб, фокусируйтесь на сути проблемы</li>
+                        <li>Будьте честны с собой и группой о реальных препятствиях</li>
+                    </ul>
+                </div>
+
+                <div class="card animate-in">
+                    <h2 class="card-title">Опишите вашу проблему (локер)</h2>
+                    <form id="locker-form">
+                        <div class="form-group">
+                            <label class="form-label" for="locker-title">Название проблемы</label>
+                            <input type="text" id="locker-title" class="form-input" placeholder="Например: Низкая конверсия на сайте">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="locker-description">Описание проблемы</label>
+                            <textarea id="locker-description" class="form-textarea" placeholder="Подробно опишите проблему, с которой вы столкнулись..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="locker-contradiction">Основное противоречие</label>
+                            <textarea id="locker-contradiction" class="form-textarea" placeholder="Какое основное противоречие вы видите? Например: Хочу увеличить конверсию, но не могу изменить дизайн сайта..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="locker-attempts">Что уже пробовали</label>
+                            <textarea id="locker-attempts" class="form-textarea" placeholder="Какие решения вы уже пробовали и почему они не сработали?"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Далее: К этапу ИНСАЙТ</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="insight-stage" class="stages-content">
+                <div class="rules-box animate-in">
+                    <div class="rules-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2V6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 18V22" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4.93 4.93L7.76 7.76" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16.24 16.24L19.07 19.07" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12H6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M18 12H22" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4.93 19.07L7.76 16.24" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16.24 7.76L19.07 4.93" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Правила этапа "ИНСАЙТ"
+                    </div>
+                    <ul class="rules-list">
+                        <li>Ищите неочевидные решения, а не первое, что приходит в голову</li>
+                        <li>Используйте технику "Что, если?", чтобы найти новые подходы</li>
+                        <li>Не критикуйте идеи сразу, даже самые безумные</li>
+                        <li>Создавайте на основе идей других участников</li>
+                        <li>Ищите решения, противоположные "естественным" реакциям</li>
+                    </ul>
+                </div>
+
+                <div class="tab-navigation">
+                    <button class="tab-btn active" data-tab="my-problem">Моя проблема</button>
+                    <button class="tab-btn" data-tab="group-ideas">Идеи группы</button>
+                    <button class="tab-btn" data-tab="my-insights">Мои инсайты</button>
+                </div>
+
+                <div id="my-problem-tab" class="tab-content active">
+                    <div class="card animate-in">
+                        <h2 class="card-title">Проблема: <span id="problem-title-display">Низкая конверсия на сайте</span></h2>
+                        <p id="problem-description-display">Подробное описание проблемы будет отображаться здесь...</p>
+                        <div style="margin-top: 1rem;">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Противоречие:</h3>
+                            <p id="problem-contradiction-display">Описание противоречия...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="group-ideas-tab" class="tab-content">
+                    <div class="insight-cards">
+                        <!-- Инсайты будут загружены динамически -->
+                    </div>
+
+                    <div class="card animate-in" style="margin-top: 2rem;">
+                        <h2 class="card-title">Предложите инсайт для группы</h2>
+                        <form id="insight-form">
+                            <div class="form-group">
+                                <label class="form-label" for="insight-idea">Ваша идея</label>
+                                <textarea id="insight-idea" class="form-textarea" placeholder="А что если..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Отправить инсайт</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="my-insights-tab" class="tab-content">
+                    <div class="card animate-in">
+                        <h2 class="card-title">Мои инсайты</h2>
+                        <form id="my-insights-form">
+                            <div class="form-group">
+                                <label class="form-label" for="best-insight">Лучший инсайт, который я получил</label>
+                                <textarea id="best-insight" class="form-textarea" placeholder="Опишите самый ценный инсайт, который вы выбрали из предложений группы"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="insight-action">Как я планирую его реализовать</label>
+                                <textarea id="insight-action" class="form-textarea" placeholder="Опишите конкретные шаги по реализации инсайта"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full">Далее: К этапу ПОТЕНЦИАЛ</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="potential-stage" class="stages-content">
+                <div class="rules-box animate-in">
+                    <div class="rules-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 8H19C20.1046 8 21 8.89543 21 10V20C21 21.1046 20.1046 22 19 22H5C3.89543 22 3 21.1046 3 20V10C3 8.89543 3.89543 8 5 8H6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 2V12" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16 6L12 2L8 6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Правила этапа "ПОТЕНЦИАЛ"
+                    </div>
+                    <ul class="rules-list">
+                        <li>Превратите инсайт в конкретный план действий</li>
+                        <li>Выделите измеримые результаты, которых вы хотите достичь</li>
+                        <li>Определите первые 3 шага, которые вы сделаете после воркшопа</li>
+                        <li>Назначьте дедлайны для каждого этапа реализации</li>
+                        <li>Подумайте, что может помешать, и как это предотвратить</li>
+                    </ul>
+                </div>
+
+                <div class="card animate-in">
+                    <h2 class="card-title">План реализации инсайта</h2>
+                    <form id="potential-form">
+                        <div class="form-group">
+                            <label class="form-label" for="potential-insight">Выбранный инсайт</label>
+                            <textarea id="potential-insight" class="form-textarea" placeholder="Опишите инсайт, который вы планируете реализовать" readonly></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="potential-goal">Цель реализации</label>
+                            <input type="text" id="potential-goal" class="form-input" placeholder="Например: Увеличить конверсию на 15% за 2 месяца">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Первые 3 шага</label>
+                            <div style="display: grid; grid-template-columns: auto 100px; gap: 0.5rem;">
+                                <input type="text" class="form-input" placeholder="Шаг 1">
+                                <input type="date" class="form-input">
+                            </div>
+                            <div style="display: grid; grid-template-columns: auto 100px; gap: 0.5rem; margin-top: 0.5rem;">
+                                <input type="text" class="form-input" placeholder="Шаг 2">
+                                <input type="date" class="form-input">
+                            </div>
+                            <div style="display: grid; grid-template-columns: auto 100px; gap: 0.5rem; margin-top: 0.5rem;">
+                                <input type="text" class="form-input" placeholder="Шаг 3">
+                                <input type="date" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="potential-obstacles">Возможные препятствия и их решения</label>
+                            <textarea id="potential-obstacles" class="form-textarea" placeholder="Какие препятствия могут возникнуть и как вы их преодолеете?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="potential-help">Какая поддержка группы вам нужна</label>
+                            <textarea id="potential-help" class="form-textarea" placeholder="Какая помощь от участников группы вам понадобится?"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Завершить воркшоп</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Модальное окно для создания сессии -->
+    <div id="create-session-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Создание новой сессии</h2>
+            <form id="create-session-form">
+                <div class="form-group">
+                    <label class="form-label" for="session-title">Название сессии</label>
+                    <input type="text" id="session-title" class="form-input" placeholder="Например: Решение маркетинговых проблем">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="session-description">Описание</label>
+                    <textarea id="session-description" class="form-textarea" placeholder="Опишите цель воркшопа..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="session-participants">Участники (email через запятую)</label>
+                    <textarea id="session-participants" class="form-textarea" placeholder="ivan@example.com, maria@example.com"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" class="btn btn-outline" id="close-create-session-modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Создать сессию</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для присоединения к сессии -->
+    <div id="join-session-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Присоединиться к сессии</h2>
+            <form id="join-session-form">
+                <div class="form-group">
+                    <label class="form-label" for="session-code">Код сессии</label>
+                    <input type="text" id="session-code" class="form-input" placeholder="Например: ABC123" maxlength="6">
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" class="btn btn-outline" id="close-join-session-modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Присоединиться</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Включаем модуль для интеграции с API -->
+    <script type="module" src="app.js"></script>
+    
+    <script>
+        // Добавляем функциональность для пользовательского меню
+        document.addEventListener('DOMContentLoaded', function() {
+            // Меню пользователя
+            const userMenuBtn = document.querySelector('.user-menu-btn');
+            const userDropdown = document.querySelector('.user-dropdown');
+            
+            userMenuBtn.addEventListener('click', () => {
+                userDropdown.classList.toggle('active');
+            });
+            
+            // Закрытие меню при клике вне его
+            document.addEventListener('click', (e) => {
+                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.remove('active');
+                }
+            });
+            
+            // Обработчики кнопок меню пользователя
+            document.getElementById('profile-btn').addEventListener('click', () => {
+                alert('Функция профиля будет доступна в будущих версиях');
+                userDropdown.classList.remove('active');
+            });
+            
+            document.getElementById('create-session-btn').addEventListener('click', () => {
+                document.getElementById('create-session-modal').classList.remove('hidden');
+                userDropdown.classList.remove('active');
+            });
+            
+            document.getElementById('join-session-btn').addEventListener('click', () => {
+                document.getElementById('join-session-modal').classList.remove('hidden');
+                userDropdown.classList.remove('active');
+            });
+            
+            document.getElementById('logout-btn').addEventListener('click', async () => {
+                try {
+                    await window.lipApp.logout();
+                } catch (error) {
+                    console.error('Ошибка при выходе:', error);
+                    location.reload();
+                }
+            });
+            
+            // Закрытие модальных окон
+            document.getElementById('close-create-session-modal').addEventListener('click', () => {
+                document.getElementById('create-session-modal').classList.add('hidden');
+            });
+            
+            document.getElementById('close-join-session-modal').addEventListener('click', () => {
+                document.getElementById('join-session-modal').classList.add('hidden');
+            });
+            
+            // Обработка формы создания сессии
+            document.getElementById('create-session-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const title = document.getElementById('session-title').value;
+                const description = document.getElementById('session-description').value;
+                const participantsInput = document.getElementById('session-participants').value;
+                
+                // Разбиваем строку с email на массив
+                const participantEmails = participantsInput
+                    .split(',')
+                    .map(email => email.trim())
+                    .filter(email => email);
+                
+                try {
+                    // В реальном приложении здесь будет вызов API
+                    // await lipApi.createSession(title, description, participantEmails);
+                    alert('Сессия успешно создана! Код: ' + Math.random().toString(36).substring(2, 8).toUpperCase());
+                    document.getElementById('create-session-modal').classList.add('hidden');
+                } catch (error) {
+                    alert('Ошибка при создании сессии: ' + error.message);
+                }
+            });
+            
+            // Обработка формы присоединения к сессии
+            document.getElementById('join-session-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const sessionCode = document.getElementById('session-code').value;
+                
+                try {
+                    // В реальном приложении здесь будет вызов API
+                    // await lipApi.joinSession(sessionCode);
+                    alert('Вы успешно присоединились к сессии!');
+                    document.getElementById('join-session-modal').classList.add('hidden');
+                } catch (error) {
+                    alert('Ошибка при присоединении к сессии: ' + error.message);
+                }
+            });
+            
+            // Обработчики вкладок
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tab = button.dataset.tab;
+                    
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tab}-tab`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
