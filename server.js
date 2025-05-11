@@ -9,11 +9,15 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
+const bodyParser = require('body-parser');
 
 // Инициализация приложения
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(express.static('public')); // Папка для статических файлов
 
 // Подключение к БД
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/lip-workshop', {
@@ -23,9 +27,12 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/lip-works
 
 // Модели данных
 const UserSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    id: { type: String, required: true },
+    first_name: { type: String, required: true },
+    last_name: { type: String },
+    username: { type: String },
+    photo_url: { type: String },
+    auth_date: { type: String, required: true },
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -115,85 +122,6 @@ const authMiddleware = async (req, res, next) => {
         res.status(401).json({ message: 'Ошибка аутентификации' });
     }
 };
-
-// Роуты для аутентификации
-app.post('/auth/register', async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
-        
-        // Проверка, существует ли пользователь
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Пользователь с таким email уже существует' });
-        }
-        
-        // Хеширование пароля
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
-        // Создание пользователя
-        const user = new User({
-            name,
-            email,
-            password: hashedPassword
-        });
-        
-        await user.save();
-        
-        // Создание JWT
-        const token = jwt.sign(
-            { userId: user._id }, 
-            process.env.JWT_SECRET || 'your-secret-key', 
-            { expiresIn: '7d' }
-        );
-        
-        res.status(201).json({
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email
-            },
-            token
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Ошибка при создании пользователя', error: error.message });
-    }
-});
-
-app.post('/auth/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        
-        // Поиск пользователя
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: 'Неверные учетные данные' });
-        }
-        
-        // Проверка пароля
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Неверные учетные данные' });
-        }
-        
-        // Создание JWT
-        const token = jwt.sign(
-            { userId: user._id }, 
-            process.env.JWT_SECRET || 'your-secret-key', 
-            { expiresIn: '7d' }
-        );
-        
-        res.json({
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email
-            },
-            token
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Ошибка при входе', error: error.message });
-    }
-});
 
 // Роуты для сессий
 app.post('/sessions', authMiddleware, async (req, res) => {
@@ -658,6 +586,75 @@ app.put('/notifications/:notificationId/read', authMiddleware, async (req, res) 
         res.json(notification);
     } catch (error) {
         res.status(500).json({ message: 'Ошибка при обновлении уведомления', error: error.message });
+    }
+});
+
+// Серверная часть для обработки авторизации через Telegram
+const config = {
+    // Замените на ваш bot_token, полученный от @BotFather
+    botToken: process.env.TELEGRAM_BOT_TOKEN || 'YOUR_BOT_TOKEN',
+};
+
+// Функция для проверки данных от Telegram
+function verifyTelegramData(data) {
+    // Создаем строку проверки
+    const dataCheckString = Object.keys(data)
+        .filter(key => key !== 'hash')
+        .sort()
+        .map(key => `${key}=${data[key]}`)
+        .join('\n');
+    
+    // Создаем секретный ключ
+    const secretKey = crypto.createHash('sha256')
+        .update(config.botToken)
+        .digest();
+    
+    // Вычисляем хеш
+    const hash = crypto.createHmac('sha256', secretKey)
+        .update(dataCheckString)
+        .digest('hex');
+    
+    // Сравниваем хеш
+    return hash === data.hash;
+}
+
+// Маршрут для авторизации через Telegram
+app.post('/api/auth/telegram', (req, res) => {
+    try {
+        const telegramData = req.body;
+        
+        // Проверяем данные
+        if (!verifyTelegramData(telegramData)) {
+            return res.status(401).json({ error: 'Неверные данные авторизации' });
+        }
+        
+        // Проверяем время авторизации (не более 24 часов)
+        const authDate = parseInt(telegramData.auth_date);
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (currentTime - authDate > 86400) {
+            return res.status(401).json({ error: 'Время авторизации истекло' });
+        }
+        
+        // В реальном приложении здесь может быть:
+        // 1. Создание/обновление пользователя в БД
+        // 2. Генерация JWT токена
+        // 3. Другая логика авторизации
+        
+        // Для демонстрации просто возвращаем данные пользователя с токеном
+        const userData = {
+            id: telegramData.id,
+            first_name: telegramData.first_name,
+            last_name: telegramData.last_name || '',
+            username: telegramData.username || '',
+            photo_url: telegramData.photo_url || '',
+            auth_date: telegramData.auth_date,
+            token: 'jwt_token_' + crypto.randomBytes(16).toString('hex'),
+        };
+        
+        res.json(userData);
+    } catch (error) {
+        console.error('Ошибка при авторизации:', error);
+        res.status(500).json({ error: 'Внутренняя ошибка сервера' });
     }
 });
 

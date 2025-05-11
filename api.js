@@ -39,29 +39,6 @@ class LIPApi {
     }
 
     /**
-     * === Аутентификация ===
-     */
-    
-    async login(email, password) {
-        const data = await this._fetch('/auth/login', 'POST', { email, password });
-        this.token = data.token;
-        localStorage.setItem('lip_token', data.token);
-        return data.user;
-    }
-
-    async register(name, email, password) {
-        const data = await this._fetch('/auth/register', 'POST', { name, email, password });
-        this.token = data.token;
-        localStorage.setItem('lip_token', data.token);
-        return data.user;
-    }
-
-    async logout() {
-        localStorage.removeItem('lip_token');
-        this.token = null;
-    }
-
-    /**
      * === Управление сессиями ===
      */
     

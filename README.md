@@ -246,6 +246,78 @@ PUT /notifications/{notificationId}/read
 Authorization: Bearer YOUR_TOKEN
 ```
 
+## Настройка авторизации через Telegram
+
+### 1. Создание бота в Telegram
+
+1. Откройте [@BotFather](https://t.me/BotFather) в Telegram
+2. Отправьте команду `/newbot`
+3. Следуйте инструкциям для создания нового бота:
+   - Укажите имя бота (например, "ЛИП Бот")
+   - Укажите username для бота (например, "lip_workshop_bot")
+4. После создания бота вы получите токен бота (bot token). Сохраните его, он понадобится для настройки.
+5. Отправьте команду `/setdomain` и укажите домен вашего сайта (например, `lip-workshop.ru`)
+
+### 2. Настройка приложения
+
+#### Клиентская часть (app.js)
+
+1. Откройте файл `app.js`
+2. Найдите блок конфигурации:
+   ```javascript
+   config: {
+       botToken: 'YOUR_BOT_TOKEN',
+       apiUrl: 'https://your-backend-api.com',
+   },
+   ```
+3. Замените `YOUR_BOT_TOKEN` на токен вашего бота
+4. Замените `https://your-backend-api.com` на URL вашего API
+
+#### Серверная часть (server.js)
+
+1. Установите необходимые зависимости:
+   ```bash
+   npm install express cors crypto body-parser
+   ```
+2. Настройте переменные окружения:
+   - `TELEGRAM_BOT_TOKEN` - токен вашего бота
+
+3. Запустите сервер:
+   ```bash
+   node server.js
+   ```
+
+#### HTML (index.html)
+
+1. Откройте файл `index.html`
+2. Найдите блок с Telegram Login Widget:
+   ```html
+   <script async src="https://telegram.org/js/telegram-widget.js?22" 
+       data-telegram-login="YOUR_BOT_NAME" 
+       data-size="large" 
+       data-radius="10" 
+       data-onauth="onTelegramAuth(user)" 
+       data-request-access="write">
+   </script>
+   ```
+3. Замените `YOUR_BOT_NAME` на username вашего бота (без символа @)
+
+### 3. Проверка работоспособности
+
+1. Откройте ваш сайт
+2. Нажмите на кнопку входа через Telegram
+3. Авторизуйтесь через Telegram
+4. Проверьте, что данные пользователя отображаются корректно
+
+## Безопасность
+
+При использовании Telegram Login Widget в рабочем окружении необходимо обязательно проверять хеш данных на сервере, чтобы убедиться, что данные действительно пришли от Telegram. Эта проверка реализована в функции `verifyTelegramData` в файле `server.js`.
+
+## Дополнительные ресурсы
+
+- [Официальная документация Telegram Login Widget](https://core.telegram.org/widgets/login)
+- [Проверка данных авторизации](https://core.telegram.org/widgets/login#checking-authorization)
+
 ## Лицензия
 
 MIT 

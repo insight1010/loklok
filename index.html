@@ -384,7 +384,7 @@
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            padding: 0.5rem 0;
+            padding: 0.7rem 0 0.5rem 0;
             margin-top: 0.5rem;
             display: none;
             min-width: 150px;
@@ -396,9 +396,13 @@
         }
         
         .user-dropdown-item {
-            padding: 0.5rem 1rem;
+            color: var(--dark);
+            padding: 0.7rem 1rem;
+            min-height: 2.2rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
         }
         
         .user-dropdown-item:hover {
@@ -718,6 +722,24 @@
         </div>
     </div>
     
+    <!-- Модальное окно для авторизации через Telegram -->
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Вход в ЛИП</h2>
+            <p style="margin-bottom: 2rem;">Для начала работы, пожалуйста, авторизуйтесь через Telegram:</p>
+            <div id="telegram-login-container" style="display: flex; justify-content: center; margin-bottom: 1rem;">
+                <!-- Здесь будет размещен Telegram Login Widget -->
+                <script async src="https://telegram.org/js/telegram-widget.js?22" 
+                    data-telegram-login="YOUR_BOT_NAME" 
+                    data-size="large" 
+                    data-radius="10" 
+                    data-onauth="onTelegramAuth(user)" 
+                    data-request-access="write">
+                </script>
+            </div>
+        </div>
+    </div>
+    
     <!-- Включаем модуль для интеграции с API -->
     <script type="module" src="app.js"></script>
     
@@ -746,11 +768,21 @@
             });
             
             document.getElementById('create-session-btn').addEventListener('click', () => {
+                // Проверяем, авторизован ли пользователь
+                if (!window.lipApp.currentUser) {
+                    window.lipApp.showLoginModal();
+                    return;
+                }
                 document.getElementById('create-session-modal').classList.remove('hidden');
                 userDropdown.classList.remove('active');
             });
             
             document.getElementById('join-session-btn').addEventListener('click', () => {
+                // Проверяем, авторизован ли пользователь
+                if (!window.lipApp.currentUser) {
+                    window.lipApp.showLoginModal();
+                    return;
+                }
                 document.getElementById('join-session-modal').classList.remove('hidden');
                 userDropdown.classList.remove('active');
             });
@@ -832,6 +864,11 @@
                     });
                 });
             });
+            
+            // Глобальная функция для обработки авторизации через Telegram
+            window.onTelegramAuth = function(user) {
+                window.lipApp.handleTelegramLogin(user);
+            };
         });
     </script>
 </body>
