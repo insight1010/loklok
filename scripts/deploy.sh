@@ -6,7 +6,7 @@
 SERVER_HOST="root@2a03:6f00:a::9409"
 SSH_KEY="~/.ssh/id_rsa"
 DEPLOY_PATH="/root/lip-workshop"
-REPOSITORY="https://github.com/yourusername/lip-workshop.git"
+REPOSITORY="https://github.com/insight1010/loklok.git"
 
 # Пароль для root
 ROOT_PASSWORD="yfu4MemdN+o-6M"
